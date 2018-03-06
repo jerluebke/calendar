@@ -1,53 +1,61 @@
+// TODO:
+// Ausgabe der Termine mit lambda realisieren (Code reuse)
+// Einlesen der Daten von der Konsole (1, 6) als eigene Funktion schreiben
+// Header aufräumen
+//
+// TESTEN!
+
+
 #include "Event.h"
 #include "conv_util.h"
 #include <string>
 #include <ctime>
 #include <map>
-#include<iostream>
-#include<functional>
-#include<algorithm>
-#include<ios>
+#include <iostream>
+#include <functional>
+#include <algorithm>
+#include <ios>
 #include <regex>
 #include <vector>
 #include <utility>
 
 
-std::function<void(void)> make_printAllEvents(std::map<time_t, Event> m) {
+// Nachrichten
+std::string gruss =
+    "+++++++++++++Kalender+++++++++++"
+    "\nFunktionen:"
+    "\n\tErstellen eines neuen Termins:             1"
+    "\n\tAusgabe aller Termine:                     2"
+    "\n\tAusgabe vergangener Termine:               3"
+    "\n\tAusgabe zukuenftiger Termine:              4"
+    "\n\tAusgabe der Termine eines Datums:          5"
+    "\n\tAusgabe der Termine einer Zeitspanne:      6"
+    "\n\tKalender beenden:                          7"
+    "\n\n";
+std::string INPUT_INVALID = "Eingabe nicht unterstuetzt!\n";
+std::string ADDED = "Termin wurde hinzugefuegt!\n";
+std::string NOT_ADDED = "Es wurde kein Termin hinzugefuegt!\n";
+std::string PROMPT = "Fuer beenden: 7 zurueck zum Kalender: 0\n";
+std::string TOO_EARLY =
+    "Ungueltige Eingabe:"
+    "Endpunkt vor Startpunkt oder Startpunkt vor 01/01/1970!";
+std::string NO_TITLE = "Ungueltige Eingabe: Kein Titel!";
 
-	return [m](void) {
-		std::for_each(m.begin(), m.end(), []( const std::pair<time_t, Event> &pair) {
 
-			std::cout << pair.second.get_startPoint() << " bis " << pair.second.get_endPoint()\
-				<< "\tTitle: " << pair.second.get_title() << std::endl;
 
-		});
-	};
-	/*return [m]() -> void {
-
-	for (std::map<time_t, Event>::iterator it = m.begin(); it != m.end(); ++it) {
-	std::cout << it->first << '\t' << it->second.get_title() << std::endl << std::endl;
-	}
-
-	};*/
-
+void error(std::string msg)
+{
+    system("cls");
+    std::cout << msg << "\n\n" << std::endl;
 }
 
-//std::regex re("\\d{2}/\\d{2}/\\d{4}-\\d{2}:\\d{2}");
-//
-//std::function<void(void)> make_checkFormat(std::regex re) {
-//
-//	return[re](void){
-//		if (std::regex_match(date.begin(), date.end(), re) && std::regex_match(date_end.begin(), date_end.end(), re)) { return true }
-//		else {
-//			std::cout << "Ungueltiges Datumsformat!" << std::endl;
-//			return false;
-//
-//
-//auto check_format = [re](std::string date, std::string date_end) {
-//std::cmatch m;
-//
-//
-//}};
+void invalidInput(std::string msg = "")
+{
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<int>::max());
+    error(INPUT_INVALID.append(msg));
+}
+
 
 
 int main() {
@@ -56,28 +64,27 @@ int main() {
 	time_t now;
 	time(&now);
 
-	
 
 	std::vector<std::string> Dates = {
-	"24/12/2017-00:00",
-	 "25/12/2017-00:00",
-	 "23/07/2017-10:00",
-	 "30/07/2017-10:00",
-	 "25/03/2019-20:00",
-	 "26/03/2019-03:00",
-	 "17/01/2019-10:00",
-	 "17/01/2019-11:00",
-	 "01/05/2018-13:00",
-	 "01/05/2018-17:00",
-	 "01/05/2018-10:00",
-	 "01/05/2018-12:00",
-	 "06/03/2018-09:00",
-	 "06/03/2018-17:00", };
+	 "24/12/2017", "00:00",
+	 "25/12/2017", "00:00",
+	 "23/07/2017", "10:00",
+	 "30/07/2017", "10:00",
+	 "25/03/2019", "20:00",
+	 "26/03/2019", "03:00",
+	 "17/01/2019", "10:00",
+	 "17/01/2019", "11:00",
+	 "01/05/2018", "13:00",
+	 "01/05/2018", "17:00",
+	 "01/05/2018", "10:00",
+	 "01/05/2018", "12:00",
+	 "06/03/2018", "09:00",
+	 "06/03/2018", "17:00", };
 	std::vector<time_t> tp;
 
-	for (int i = 0; i < Dates.size(); ++i) {
+	for (size_t i = 0; i < Dates.size()-1; i+=2) {
 
-		tp.push_back(stringToTime(Dates[i]));
+		tp.push_back(stringToTime(Dates[i], Dates[i+1]));
 	}
 
 	Calender.insert(std::pair<time_t, Event>(tp[0], Event(tp[0], tp[1], "Jesus Birthday")));
@@ -88,273 +95,242 @@ int main() {
 	Calender.insert(std::pair<time_t, Event>(tp[10], Event(tp[10], tp[11], "Klausur")));
 	Calender.insert(std::pair<time_t, Event>(tp[12], Event(tp[12], tp[13], "C++")));
 
-	auto printAllEvents = make_printAllEvents(Calender);
 
 	std::string n;
 	bool beendet = false;
 
 	std::string date = "";
+    std::string datetime;
 	time_t startPoint;
 	std::string title;
 	std::string date_end;
+    std::string datetime_end;
 	time_t endPoint;
 
 
 	while (beendet == false) {
-		std::cout << "----Kalender----------- \nFunktionen:\nErstellen eines neuen Termins: 1 \nAusgabe aller Termine: 2 \nAusgabe vergangener Termine: 3 \nAusgabe zukuenftiger Termine: 4 \nAusgabe der Termine eines Datums: 5 \nAusgabe der Termine einer Zeitspanne: 6\nKalender beenden: 7\n\n";
+        system("cls");
+		std::cout << gruss;
 		std::cin >> n;
 
 
-		if (n == "1") {
-
-			bool valid_input = true;
+        if (n == "1") {
 
 			try {
-
-				std::cin.exceptions(std::ios::failbit);
+			    std::cin.exceptions(std::ios::failbit);
 
 				std::cout << "Titel des Termins: ";
 				getchar();
 				std::getline(std::cin, title);
 				std::cout << std::endl;
-				std::cout << "Eingabe von Datum und Uhrzeit (dd/mm/yyyy-hh:mm)" ;
+
+				std::cout << "Gebe ein Datum ein (dd/mm/yyyy): ";
 				std::cin >> date;
-				std::cout << "Eingabe von End-Datum und Uhrzeit (dd/mm/yyyy-hh:mm)";
-				std::cin >> date_end;
-				
+                std::cout << "Gebe eine Uhrzeit ein (hh:mm): ";
+                std::cin >> datetime;
+                startPoint = stringToTime(date, datetime);
+
+                std::cout << "Gebe das Enddatum ein (dd/mm/yyyy): ";
+                std::cin >> date_end;
+                std::cout << "Gebe eine Uhrzeit des Enddatums ein (hh:mm): ";
+				std::cin >> datetime_end;
+                endPoint = stringToTime(date_end, datetime_end);
 			}
 			catch (std::ios_base::failure & exc) {
-				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<int>::max());
-				std::cout << "Falsche Eingabe!" << std::endl;
-				valid_input = false;
+                invalidInput();
+                continue;
 			}
+            catch (std::invalid_argument &exc) {
+                invalidInput(exc.what());
+                continue;
+            }
 
-			//check format:
-			std::regex re("\\d{2}/\\d{2}/\\d{4}-\\d{2}:\\d{2}");
-			std::cmatch m;
-			if (std::regex_match(date.begin(), date.end(), re) && std::regex_match(date_end.begin(), date_end.end(), re)) {}
-			else {
-				std::cout << "Ungueltiges Datumsformat!" << std::endl;
-				valid_input = false;
-
-			}
-
-			//string to time:
-			try {
-				startPoint = stringToTime(date); 
-				endPoint = stringToTime(date_end);
-			}
-			catch (std::invalid_argument &exc) {
-
-				std::cerr << exc.what() << std::endl;
-				valid_input = false;
-			}
-
-			
 			if (endPoint < startPoint || startPoint == -1) {
-
-				valid_input = false;
-				std::cerr << "Ungueltige Eingabe: Endpunkt vor Startpunkt oder Startpunkt vor 01/01/1970!" << std::endl;
+                invalidInput(TOO_EARLY);
+                continue;
 			}
 			else if (title == "") {
-				valid_input = false;
-				std::cerr << "Ungueltige Eingabe: Kein Titel!" << std::endl;
+                invalidInput(NO_TITLE);
+                continue;
 			}
-			
-			if(valid_input == true){
 
-				bool valid_event = true;
+            bool valid_event = true;
 
+            //check if there is already an event:
+            for (std::map<time_t, Event> ::iterator it = Calender.begin();
+                it != Calender.end(); ++it) {
 
-				//check if there is already an event:
-				for (std::map<time_t, Event> ::iterator it = Calender.begin(); it != Calender.end(); ++it) {
+                if ((it->second.get_startPoint() < startPoint
+                            && it->second.get_endPoint() > startPoint)
+                    && (it->second.get_startPoint() < endPoint
+                        && it->second.get_endPoint() > endPoint)
+                    && (it->second.get_startPoint() > startPoint
+                        && it->second.get_endPoint() < endPoint)) {
 
-					if (it->second.get_startPoint() < startPoint && it->second.get_endPoint() > startPoint) {
+                    std::string msg =
+                        "Es existiert bereits ein Termin in diesem Zeitraum!\n"
+                        + it->second.get_title() + ": "
+                        + timeToString(it->second.get_startPoint()) + " - "
+                        + timeToString(it->second.get_endPoint()) + "\n";
+                    valid_event = false;
+                    error(msg);
+                    break;
 
-						std::cout << "Es existiert bereits ein Termin in diesem Zeitraum!" << std::endl;
-						std::cout << it->second.get_title() << ": " << timeToString(it->second.get_startPoint()) << " - " << timeToString(it->second.get_endPoint()) << std::endl;
-						valid_event = false;
-						break;
+                }
+            }
 
-					}
-					else if (it->second.get_startPoint() < endPoint && it->second.get_endPoint() > endPoint) {
-
-						std::cout << " Es existiert bereits ein Termin in diesem Zeitraum!\n" << std::endl;
-						std::cout << it->second.get_title() << ": " << timeToString(it->second.get_startPoint()) << " - " << timeToString(it->second.get_endPoint()) << std::endl;
-						valid_event = false;
-						break;
-					}
-					else if (it->second.get_startPoint() > startPoint && it->second.get_endPoint() < endPoint) {
-
-						std::cout << " Es existiert bereits ein Termin in diesem Zeitraum!\n"  << std::endl;
-						std::cout << it->second.get_title() << ": " << timeToString(it->second.get_startPoint()) << " - " << timeToString(it->second.get_endPoint()) << std::endl;
-						valid_event = false;
-						break;
-					}
-
-				}
-
-				if (valid_event) {
-					Calender.insert(std::pair<time_t, Event>(startPoint, Event(startPoint, endPoint, title)));
-
-					std::cout << "Termin wurde hinzugefuegt!\nFuer beenden: 7 zurueck zum Kalender: 0\n";
-					std::cin >> n;
-				}
-				else {
-					std::cout << "Es wurde kein Termin hinzugefuegt!\nFuer beenden: 7 zurueck zum Kalender: 0\n";
-					std::cin >> n;
-				}
-			}
-			else {
-				std::cout << "Es wurde kein Termin hinzugefuegt!\nFuer beenden: 7 zurueck zum Kalender: 0\n";
-				std::cin >> n;
-			}
-			if (n == "7") {
-				beendet = true;
-			}
+            if (valid_event) {
+                Calender.insert(std::pair<time_t,
+                        Event>(startPoint, Event(startPoint, endPoint, title)));
+                std::cout << ADDED << PROMPT;
+                std::cin >> n;
+            }
+            else {
+                std::cout << NOT_ADDED << PROMPT;
+                std::cin >> n;
+            }
 		}
+
+
 		else if (n == "2") {
 
 			std::cout << "Alle gespeicherten Termine:\n";
 
-			/*for (std::map<time_t, Event> ::iterator it = Calender.begin(); it != Calender.end(); ++it) {
-				std::cout << timeToString(it->first) << '\t' << it->second.get_title() << std::endl << std::endl;
-			}*/
-
-			printAllEvents();
-
-			std::cout << "Fuer beenden: 7 zurueck zum Kalender: 0\n";
-			std::cin >> n;
-			if (n == "7") {
-				beendet = true;
+			for (std::map<time_t, Event> ::iterator it = Calender.begin();
+                    it != Calender.end(); ++it) {
+				std::cout << timeToString(it->first) << '\t';
+                std::cout << it->second.get_title() << std::endl;
 			}
+
+			std::cout << PROMPT;
+			std::cin >> n;
+
 		}
-		else if (n == "3") {
+
+
+        else if (n == "3") {
 
 			std::cout << "Alle vergangenen Termine:\n";
 
-			for (std::map<time_t, Event> ::iterator it = Calender.begin(); it->first < now; ++it) {
+			for (std::map<time_t, Event> ::iterator it = Calender.begin();
+                    it->first < now; ++it) {
 				if (it->second.get_endPoint() < now) {
-					std::cout << timeToString(it->first) << '\t' << it->second.get_title() << std::endl << std::endl;
+					std::cout << timeToString(it->first) << '\t';
+                    std::cout << it->second.get_title() << std::endl;
 				}
 			}
 
-			std::cout << "Fuer beenden: 7 zurueck zum Kalender: 0\n";
+			std::cout << PROMPT;
 			std::cin >> n;
-			if (n == "7") {
-				beendet = true;
-			}
+
 		}
+
+
 		else if (n == "4") {
 
 			std::cout << "Alle zukuenftigen Termine:\n";
 
-			for (std::map<time_t, Event> ::iterator it = Calender.begin(); it != Calender.end(); ++it) {
+			for (std::map<time_t, Event> ::iterator it = Calender.begin();
+                    it != Calender.end(); ++it) {
 				if (it->first > now) {
-					std::cout << timeToString(it->first) << '\t' << it->second.get_title() << std::endl << std::endl;
+					std::cout << timeToString(it->first) << '\t';
+                    std::cout << it->second.get_title() << std::endl;
 				}
 			}
 
-			std::cout << "Fuer beenden: 7 zurueck zum Kalender: 0\n";
+			std::cout << PROMPT;
 			std::cin >> n;
-			if (n == "7") {
-				beendet = true;
-			}
 
 		}
+
+
 		else if (n == "5") {
 
 			std::cout << "Eingabe des Datums (dd/mm/yyyy):\n";
 			std::cin >> date;
+            datetime = "00:01";
+            datetime_end = "23:59";
+
+            try {
+                startPoint = stringToTime(date, datetime);
+                endPoint = stringToTime(date, datetime_end);
+            }
+            catch (std::invalid_argument &exc) {
+                invalidInput(exc.what());
+                continue;
+            }
+
 			std::cout << std::endl;
-			//check format:
-			std::regex re("\\d{2}/\\d{2}/\\d{4}");
-			std::cmatch m;
-			if (std::regex_match(date.begin(), date.end(), re) ) {
 
-				date_end = date;
-				date.append("-00:01");
-				date_end.append("-23:59");
+            int n_events = 0;
+            for (std::map<time_t, Event> ::iterator it = Calender.begin();
+                    it != Calender.end(); ++it) {
 
-				try {
-					startPoint = stringToTime(date);
-					endPoint = stringToTime(date_end);
-				}
-				catch (std::invalid_argument &exc) {
+                if (it->first >= startPoint && it->first <= endPoint) {
+                    std::cout << timeToString(it->first) << '\t';
+                    std::cout << it->second.get_title() << std::endl << std::endl;
+                    n_events++;
+                }
+            }
 
-					std::cerr << exc.what() << std::endl;
-				}
+			std::cout << n_events << " an diesem Tag\n";
 
-				int n_events = 0;
-				for (std::map<time_t, Event> ::iterator it = Calender.begin(); it != Calender.end(); ++it) {
-					if (it->first >= startPoint && it->first <= endPoint) {
-						std::cout << timeToString(it->first) << '\t' << it->second.get_title() << std::endl << std::endl;
-						n_events++;
-					}
-				}
-
-				std::cout << n_events << " an diesem Tag\n";
-			}
-			else {
-				std::cout << "Ungueltiges Zeitformat!" << std::endl;
-			}
-			std::cout << "Fuer beenden: 7 zurueck zum Kalender: 0\n";
+			std::cout << PROMPT;
 			std::cin >> n;
-			if (n == "7") {
-				beendet = true;
-			}
+
 		}
+
 		else if (n == "6") {
 
-			std::cout << "Eingabe des Start-Punktes: (dd/mm/yyyy-hh:mm):\n";
+			std::cout << "Eingabe des Start-Datums: (dd/mm/yyyy): ";
 			std::cin >> date;
+            std::cout << "Uhrzeit (hh:mm): ";
+            std::cin >> datetime;
 
-			std::cout << "Eingabe des End-Punktes: (dd/mm/yyyy-hh:mm):\n";
+			std::cout << "Eingabe des End-Punktes: (dd/mm/yyyy):";
 			std::cin >> date_end;
+            std::cout << "Uhrzeit (hh:mm): ";
+            std::cin >> datetime_end;
+
 			std::cout << std::endl;
 
-			//check format:
-			std::regex re("\\d{2}/\\d{2}/\\d{4}-\\d{2}:\\d{2}");
-			std::cmatch m;
-			if (std::regex_match(date.begin(), date.end(), re) && std::regex_match(date_end.begin(), date_end.end(), re)) {
+            try {
+                startPoint = stringToTime(date, datetime);
+                endPoint = stringToTime(date_end, datetime_end);
+            }
+            catch (std::invalid_argument &exc) {
+                invalidInput(exc.what());
+                continue;
+            }
+
+            int n_events = 0;
+            for (std::map<time_t, Event> ::iterator it = Calender.begin();
+                    it != Calender.end(); ++it) {
+                if (it->first >= startPoint && it->first <= endPoint) {
+                    std::cout << timeToString(it->first) << '\t';
+                    std::cout << it->second.get_title() << std::endl << std::endl;
+                    n_events++;
+                }
+            }
+
+            std::cout << n_events << " in dieser Zeitspanne!\n";
 
 
-				try {
-					startPoint = stringToTime(date);
-					endPoint = stringToTime(date_end);
-				}
-				catch (std::invalid_argument &exc) {
-
-					std::cerr << exc.what() << std::endl;
-				}
-
-				int n_events = 0;
-				for (std::map<time_t, Event> ::iterator it = Calender.begin(); it != Calender.end(); ++it) {
-					if (it->first >= startPoint && it->first <= endPoint) {
-						std::cout << timeToString(it->first) << '\t' << it->second.get_title() << std::endl << std::endl;
-						n_events++;
-					}
-				}
-
-				std::cout << n_events << " in dieser Zeitspanne!\n";
-			}
-			else {
-				std::cout << "Ungueltiges Zeitformat!" << std::endl;
-
-			}
-			std::cout << "Fuer beenden: 7 zurueck zum Kalender: 0\n";
+			std::cout << PROMPT;
 			std::cin >> n;
-			if (n == "7") {
-				beendet = true;
-			}
+
 		}
-		else if (n == "7") {
+
+
+		if (n == "7")
 			beendet = true;
-		}
-		else {
-			std::cerr << "Keine gueltige Eingabe!\n\n";
-		}
+
+        else if (n == "0")
+            continue;
+
+		else
+            error("Keine gueltige Eingabe!\n");
+
 	}
 
 
