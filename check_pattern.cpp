@@ -74,10 +74,22 @@ int main()
     };
     std::regex dateRe("(\\d{1,2}[^[:alnum:]]){2}\\d{4}");
     std::regex timeRe("\\d{1,2}[^[:alnum:]]\\d{1,2}");
+    std::regex reD("\\d+");
     auto checkDate = make_checker(dateRe);
     auto checkTime = make_checker(timeRe);
     for (std::string d: dates)
+    {
         std::cout << d << std::boolalpha << checkDate(d) << std::endl;
+        if (checkDate(d))
+        {
+            std::smatch sm;
+            while (std::regex_search(d, sm, reD))
+            {
+                std::cout << sm.str() << std::endl;
+                d = sm.suffix().str();
+            }
+        }
+    }
     for (std::string t: times)
         std::cout << t << std::boolalpha << checkTime(t) << std::endl;
 }

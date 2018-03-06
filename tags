@@ -8,9 +8,17 @@ Calender	calendar/calendar/Calender.h	/^class Calender {$/;"	c
 Event	calendar/calendar/Event.cpp	/^Event::Event(const time_t startPoint, const time_t endPoint, const std::string title) {$/;"	f	class:Event
 Event	calendar/calendar/Event.h	/^class Event {$/;"	c
 _XOPEN_SOURCE	conversation/conversation/conv_util.cpp	3;"	d	file:
+dateChecker	calendar/calendar/checker.cpp	/^auto dateChecker = make_checker(dateRe);$/;"	v
+dateInRange	calendar/calendar/checker.cpp	/^bool dateInRange(std::vector<const int> tokens)$/;"	f
+dateIsValid	calendar/calendar/checker.cpp	/^auto dateIsValid = inputIsValid(dateChecker, dateInRange);$/;"	v
+dayIsValid	calendar/calendar/checker.cpp	/^bool dayIsValid(const int day, const int month)$/;"	f
 get_endPoint	calendar/calendar/Event.cpp	/^time_t Event::get_endPoint() const {$/;"	f	class:Event
 get_startPoint	calendar/calendar/Event.cpp	/^time_t Event::get_startPoint() const {$/;"	f	class:Event
 get_title	calendar/calendar/Event.cpp	/^std::string Event::get_title() const {$/;"	f	class:Event
+get_tokens	calendar/calendar/checker.cpp	/^std::vector<const int> get_tokens(std::string input)$/;"	f
+hoursIsValid	calendar/calendar/checker.cpp	/^auto hoursIsValid = isValid(0, 23);$/;"	v
+inputIsValid	calendar/calendar/checker.cpp	/^std::function<bool(std::string)> inputIsValid($/;"	f
+isValid	calendar/calendar/checker.cpp	/^std::function<bool(const int)> isValid(const int start, const int end)$/;"	f
 m_Calender	calendar/calendar/Calender.h	/^	std::map<time_t, Event> m_Calender;$/;"	m	class:Calender
 m_duration	calendar/calendar/Event.h	/^	 time_t m_duration;$/;"	m	class:Event
 m_endPoint	calendar/calendar/Event.h	/^	 time_t m_endPoint;$/;"	m	class:Event
@@ -19,9 +27,16 @@ m_title	calendar/calendar/Event.h	/^	 std::string m_title;$/;"	m	class:Event
 main	calendar/calendar/main.cpp	/^int main() {$/;"	f
 main	check_pattern.cpp	/^int main()$/;"	f
 main	conversation/conversation/main_util.cpp	/^int main()$/;"	f
+make_checker	calendar/calendar/checker.cpp	/^std::function<bool(std::string)> make_checker(std::regex re)$/;"	f
 make_checker	calendar/calendar/conv_util.cpp	/^std::function<bool(std::string)> make_checker(std::regex re)$/;"	f
 make_printAllEvents	calendar/calendar/main.cpp	/^std::function<void(void)> make_printAllEvents(std::map<time_t, Event> m) {$/;"	f
+minutesIsValid	calendar/calendar/checker.cpp	/^auto minutesIsValid = isValid(0, 59);$/;"	v
+monthIsValid	calendar/calendar/checker.cpp	/^auto monthIsValid = isValid(1, 12);$/;"	v
 stringToTime	calendar/calendar/conv_util.cpp	/^std::time_t stringToTime (std::string input)$/;"	f
 stringToTime	conversation/conversation/conv_util.cpp	/^std::time_t stringToTime (std::string input)$/;"	f
+timeChecker	calendar/calendar/checker.cpp	/^auto timeChecker = make_checker(timeRe);$/;"	v
+timeInRange	calendar/calendar/checker.cpp	/^bool timeInRange(std::vector<const int> tokens)$/;"	f
+timeIsValid	calendar/calendar/checker.cpp	/^auto timeIsValid = inputIsValid(timeChecker, timeInRange);$/;"	v
 timeToString	calendar/calendar/conv_util.cpp	/^std::string timeToString (std::time_t time)$/;"	f
 timeToString	conversation/conversation/conv_util.cpp	/^std::string timeToString (std::time_t time)$/;"	f
+yearIsValid	calendar/calendar/checker.cpp	/^auto yearIsValid = isValid(1970, 2050);$/;"	v
