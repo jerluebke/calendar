@@ -19,5 +19,5 @@ private:
 	 time_t m_endPoint;
 	 std::string m_title;
 	 time_t m_duration;
-
+	
 };
