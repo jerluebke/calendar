@@ -1,10 +1,17 @@
-#include "conv_util.h"
-
+#include "checker.h"
 
 // Common regex as global variables
 std::regex reD("\\d+");
-std::regex dateRe("(\\d{1,2}[^[:alnum:]]){2}\\d{4}");
-std::regex timeRe("\\d{1,2}[^[:alnum:]]\\d{1,2}");
+
+// utility function for converting string to int
+// without error-checking!
+int strToInt(std::string arg)
+{
+    int i;
+    std::istringstream ss(arg);
+    ss >> i;
+    return i;
+}
 
 
 /**
@@ -59,58 +66,16 @@ std::function<bool(const int)> isValid(const int start, const int end)
  *  @Returns : a function taking a string as input and returning whether it is
  *      valid according to the tow provided checkers
  */
-std::function<bool(std::string)> inputIsValid(
+std::function<bool(std::string, std::vector<const int>)> inputIsValid(
         std::function<bool(std::string)> checker,
         std::function<bool(std::vector<const int>)> inRange)
 {
-    return [checker, inRange](std::string input)
+    return [checker, inRange](std::string input, std::vector<const int> tokens)
     {
         if (!checker(input))
             return false;
-        std::vector<const int> tokens = get_tokens(input);
         if (inRange(tokens))
             return true;
         return false;
     };
 }
-
-
-// make checkers (pattern according to regex)
-auto timeChecker = make_checker(timeRe);
-auto dateChecker = make_checker(dateRe);
-
-
-// make isValid functions (value in intervall)
-auto hoursIsValid = isValid(0, 23);
-auto minutesIsValid = isValid(0, 59);
-auto yearIsValid = isValid(1970, 2050);
-auto monthIsValid = isValid(1, 12);
-bool dayIsValid(const int day, const int month)
-{
-    int end;
-    if (month == 2)
-        end = 28;
-    else if (month % 2 == 0)
-        end = 30;
-    else    // month % 2 == 1
-        end = 31;
-    return (day > 0 && day <= end);
-}
-
-
-// inRange functions; checking isValid functions for all relevant tokens
-bool dateInRange(std::vector<const int> tokens)
-{
-    return (yearIsValid(tokens[2])
-            && monthIsValid(tokens[1])
-            && dayIsValid(tokens[0], tokens[1]));
-}
-bool timeInRange(std::vector<const int> tokens)
-{
-    return (hoursIsValid(tokens[0]) && minutesIsValid(tokens[1]));
-}
-
-
-// make inputIsValid functions, pooling above information
-auto dateIsValid = inputIsValid(dateChecker, dateInRange);
-auto timeIsValid = inputIsValid(timeChecker, timeInRange);
