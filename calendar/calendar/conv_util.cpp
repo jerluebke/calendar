@@ -1,12 +1,9 @@
 #pragma warning(disable:4996)
 
-#include <ctime>
+#include "conv_util.h"
 #include <iomanip>
-#include <string>
 #include <sstream>
 #include <stdexcept>
-#include <regex>
-#include <functional>
 
 
 std::time_t stringToTime (std::string input)
@@ -31,10 +28,10 @@ std::string timeToString (std::time_t time)
 
 
 
-std::function<std::regex(std::string)> make_regex(std::string fmt)
+std::function<bool(std::string)> make_checker(std::regex re)
 {
-    return [fmt](std::string target)
+    return [re](std::string target)
         {
-            std::regex_match(target, std::regex(fmt));
+            return std::regex_match(target, re);
         };
 }

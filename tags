@@ -19,8 +19,8 @@ m_title	calendar/calendar/Event.h	/^	 std::string m_title;$/;"	m	class:Event
 main	calendar/calendar/main.cpp	/^int main() {$/;"	f
 main	check_pattern.cpp	/^int main()$/;"	f
 main	conversation/conversation/main_util.cpp	/^int main()$/;"	f
+make_checker	calendar/calendar/conv_util.cpp	/^std::function<bool(std::string)> make_checker(std::regex re)$/;"	f
 make_printAllEvents	calendar/calendar/main.cpp	/^std::function<void(void)> make_printAllEvents(std::map<time_t, Event> m) {$/;"	f
-strToInt	check_pattern.cpp	/^int strToInt(std::string arg)$/;"	f
 stringToTime	calendar/calendar/conv_util.cpp	/^std::time_t stringToTime (std::string input)$/;"	f
 stringToTime	conversation/conversation/conv_util.cpp	/^std::time_t stringToTime (std::string input)$/;"	f
 timeToString	calendar/calendar/conv_util.cpp	/^std::string timeToString (std::time_t time)$/;"	f
