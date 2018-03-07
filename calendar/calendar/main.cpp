@@ -18,6 +18,7 @@
 #include <regex>
 #include <vector>
 #include <utility>
+#include <limits>
 
 
 // Nachrichten
@@ -37,9 +38,13 @@ std::string ADDED = "Termin wurde hinzugefuegt!\n";
 std::string NOT_ADDED = "Es wurde kein Termin hinzugefuegt!\n";
 std::string PROMPT = "Fuer beenden: 7 zurueck zum Kalender: 0\n";
 std::string TOO_EARLY =
-    "Ungueltige Eingabe:"
+    "Ungueltige Eingabe: "
     "Endpunkt vor Startpunkt oder Startpunkt vor 01/01/1970!";
 std::string NO_TITLE = "Ungueltige Eingabe: Kein Titel!";
+std::string ENTER_DATE = "Gebe ein Datum ein (dd/mm/yyyy): ";
+std::string ENTER_TIME = "Gebe eine Uhrzeit ein (hh:mm): ";
+std::string ENTER_ENDDATE = "Gebe das Enddatum ein (dd/mm/yyyy): ";
+std::string ENTER_ENDTIME = "Gebe eine Uhrzeit des Enddatums ein (hh:mm): ";
 
 
 
@@ -54,6 +59,21 @@ void invalidInput(std::string msg = "")
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<int>::max());
     error(INPUT_INVALID.append(msg));
+}
+
+void promptForDate(time_t storage, std::string datetime="",
+        std::string MSG_DATE="", std::string MSG_TIME="")
+{
+    std::string date = "";
+    std::cout << MSG_DATE;
+    std::cin >> date;
+    // std::cout << std::endl;
+    if (datetime == "")
+    {
+        std::cout << MSG_TIME;
+        std::cin >> datetime;
+    }
+    storage = stringToTime(date, datetime);
 }
 
 
@@ -96,15 +116,12 @@ int main() {
 	Calender.insert(std::pair<time_t, Event>(tp[12], Event(tp[12], tp[13], "C++")));
 
 
-	std::string n;
+	// std::string n;
+    char n;
 	bool beendet = false;
 
-	std::string date = "";
-    std::string datetime;
-	time_t startPoint;
 	std::string title;
-	std::string date_end;
-    std::string datetime_end;
+	time_t startPoint;
 	time_t endPoint;
 
 
@@ -114,7 +131,7 @@ int main() {
 		std::cin >> n;
 
 
-        if (n == "1") {
+        if (n == '1') {
 
 			try {
 			    std::cin.exceptions(std::ios::failbit);
@@ -124,17 +141,10 @@ int main() {
 				std::getline(std::cin, title);
 				std::cout << std::endl;
 
-				std::cout << "Gebe ein Datum ein (dd/mm/yyyy): ";
-				std::cin >> date;
-                std::cout << "Gebe eine Uhrzeit ein (hh:mm): ";
-                std::cin >> datetime;
-                startPoint = stringToTime(date, datetime);
+                promptForDate(startPoint, "", ENTER_DATE, ENTER_TIME);
+                promptForDate(endPoint, "", ENTER_ENDDATE, ENTER_ENDTIME);
 
-                std::cout << "Gebe das Enddatum ein (dd/mm/yyyy): ";
-                std::cin >> date_end;
-                std::cout << "Gebe eine Uhrzeit des Enddatums ein (hh:mm): ";
-				std::cin >> datetime_end;
-                endPoint = stringToTime(date_end, datetime_end);
+                std::cout << std::endl;
 			}
 			catch (std::ios_base::failure & exc) {
                 invalidInput();
@@ -192,7 +202,7 @@ int main() {
 		}
 
 
-		else if (n == "2") {
+		else if (n == '2') {
 
 			std::cout << "Alle gespeicherten Termine:\n";
 
@@ -208,7 +218,7 @@ int main() {
 		}
 
 
-        else if (n == "3") {
+        else if (n == '3') {
 
 			std::cout << "Alle vergangenen Termine:\n";
 
@@ -226,7 +236,7 @@ int main() {
 		}
 
 
-		else if (n == "4") {
+		else if (n == '4') {
 
 			std::cout << "Alle zukuenftigen Termine:\n";
 
@@ -244,21 +254,25 @@ int main() {
 		}
 
 
-		else if (n == "5") {
-
-			std::cout << "Eingabe des Datums (dd/mm/yyyy):\n";
-			std::cin >> date;
-            datetime = "00:01";
-            datetime_end = "23:59";
+		else if (n == '5') {
 
             try {
-                startPoint = stringToTime(date, datetime);
-                endPoint = stringToTime(date, datetime_end);
+			    std::cin.exceptions(std::ios::failbit);
+                promptForDate(startPoint, "00:01", ENTER_DATE);
             }
+			catch (std::ios_base::failure & exc) {
+                invalidInput();
+                continue;
+			}
             catch (std::invalid_argument &exc) {
                 invalidInput(exc.what());
                 continue;
             }
+
+            struct tm start_tm = *localtime(&startPoint);
+            struct tm end_tm = start_tm;
+            end_tm.tm_sec += 86398;        // endPoint: date-23:59
+            endPoint = std::mktime(&end_tm);
 
 			std::cout << std::endl;
 
@@ -280,24 +294,20 @@ int main() {
 
 		}
 
-		else if (n == "6") {
+		else if (n == '6') {
 
-			std::cout << "Eingabe des Start-Datums: (dd/mm/yyyy): ";
-			std::cin >> date;
-            std::cout << "Uhrzeit (hh:mm): ";
-            std::cin >> datetime;
+			try {
+			    std::cin.exceptions(std::ios::failbit);
 
-			std::cout << "Eingabe des End-Punktes: (dd/mm/yyyy):";
-			std::cin >> date_end;
-            std::cout << "Uhrzeit (hh:mm): ";
-            std::cin >> datetime_end;
+                promptForDate(startPoint, "", ENTER_DATE, ENTER_TIME);
+                promptForDate(endPoint, "", ENTER_ENDDATE, ENTER_ENDTIME);
 
-			std::cout << std::endl;
-
-            try {
-                startPoint = stringToTime(date, datetime);
-                endPoint = stringToTime(date_end, datetime_end);
-            }
+                std::cout << std::endl;
+			}
+			catch (std::ios_base::failure & exc) {
+                invalidInput();
+                continue;
+			}
             catch (std::invalid_argument &exc) {
                 invalidInput(exc.what());
                 continue;
@@ -315,17 +325,16 @@ int main() {
 
             std::cout << n_events << " in dieser Zeitspanne!\n";
 
-
 			std::cout << PROMPT;
 			std::cin >> n;
 
 		}
 
 
-		if (n == "7")
+		if (n == '7')
 			beendet = true;
 
-        else if (n == "0")
+        else if (n == '0')
             continue;
 
 		else

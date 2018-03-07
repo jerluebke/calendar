@@ -69,7 +69,7 @@ std::time_t stringToTime (std::string date, std::string time)
         .tm_hour = timeToken[0],
         .tm_mday = dateToken[0],
         .tm_mon = dateToken[1],
-        .tm_year = dateToken[0]
+        .tm_year = dateToken[2]
     };
     const std::time_t tt = std::mktime(&tm);
     return tt;
