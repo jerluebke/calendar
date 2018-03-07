@@ -5,9 +5,11 @@
 //
 // TESTEN!
 
+#pragma warning(disable:4996)
 
 #include "Event.h"
 #include "conv_util.h"
+#include "checker.h"
 #include <string>
 #include <ctime>
 #include <map>
@@ -57,7 +59,7 @@ void error(std::string msg)
 void invalidInput(std::string msg = "")
 {
     std::cin.clear();
-    std::cin.ignore(std::numeric_limits<int>::max());
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     error(INPUT_INVALID.append(msg));
 }
 
@@ -121,12 +123,12 @@ int main() {
 	bool beendet = false;
 
 	std::string title;
-	time_t startPoint;
-	time_t endPoint;
+	time_t startPoint = 0;
+	time_t endPoint = 0;
 
 
 	while (beendet == false) {
-        system("cls");
+        // system("cls");
 		std::cout << gruss;
 		std::cin >> n;
 

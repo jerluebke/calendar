@@ -3,16 +3,6 @@
 // Common regex as global variables
 std::regex reD("\\d+");
 
-// utility function for converting string to int
-// without error-checking!
-int strToInt(std::string arg)
-{
-    int i;
-    std::istringstream ss(arg);
-    ss >> i;
-    return i;
-}
-
 
 /**
  *  makes a function for checking whether a string fits a regex
@@ -33,13 +23,13 @@ std::function<bool(std::string)> make_checker(std::regex re)
  *  @Parameters : String, which is assumed to be consisting of digits
  *  @Returns : Vector containing the digit-sequences of the input string
  */
-std::vector<const int> get_tokens(std::string input)
+std::vector<int> get_tokens(std::string input)
 {
-    std::vector<const int> token;
+    std::vector<int> token;
     std::smatch sm;
     while (std::regex_search(input, sm, reD))
     {
-        token.push_back(strToInt(sm.str()));
+        token.push_back(std::stoi(sm.str()));
         input = sm.suffix().str();
      }
     return token;
@@ -66,11 +56,11 @@ std::function<bool(const int)> isValid(const int start, const int end)
  *  @Returns : a function taking a string as input and returning whether it is
  *      valid according to the tow provided checkers
  */
-std::function<bool(std::string, std::vector<const int>)> inputIsValid(
+std::function<bool(std::string, std::vector<int>)> inputIsValid(
         std::function<bool(std::string)> checker,
-        std::function<bool(std::vector<const int>)> inRange)
+        std::function<bool(std::vector<int>)> inRange)
 {
-    return [checker, inRange](std::string input, std::vector<const int> tokens)
+    return [checker, inRange](std::string input, std::vector<int> tokens)
     {
         if (!checker(input))
             return false;

@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
+#include <iostream>
 
 
 // common regex as global variable
@@ -36,13 +37,13 @@ bool dayIsValid(const int day, const int month)
 
 
 // inRange functions; checking isValid functions for all relevant tokens
-bool dateInRange(std::vector<const int> tokens)
+bool dateInRange(std::vector<int> tokens)
 {
     return (yearIsValid(tokens[2])
             && monthIsValid(tokens[1])
             && dayIsValid(tokens[0], tokens[1]));
 }
-bool timeInRange(std::vector<const int> tokens)
+bool timeInRange(std::vector<int> tokens)
 {
     return (hoursIsValid(tokens[0]) && minutesIsValid(tokens[1]));
 }
@@ -60,18 +61,21 @@ auto timeIsValid = inputIsValid(timeChecker, timeInRange);
  */
 std::time_t stringToTime (std::string date, std::string time)
 {
-    std::vector<const int> dateToken = get_tokens(date);
-    std::vector<const int> timeToken = get_tokens(time);
+    std::vector<int> dateToken = get_tokens(date);
+    std::vector<int> timeToken = get_tokens(time);
     if (!(dateIsValid(date, dateToken) && timeIsValid(time, timeToken)))
         throw std::invalid_argument("Eingabeformat des Datums nicht unterstuetzt...");
-    std::tm tm = {
-        .tm_min = timeToken[1],
-        .tm_hour = timeToken[0],
-        .tm_mday = dateToken[0],
-        .tm_mon = dateToken[1],
-        .tm_year = dateToken[2]
-    };
+
+    std::stringstream ss;
+    ss << dateToken[0] << "/" << dateToken[1] << "/" << dateToken[2];
+    ss << "-" << timeToken[0] << ":" << timeToken[1];
+    std::string datetimeString = ss.str();
+
+    std::tm tm = {};
+    std::istringstream is(datetimeString);
+    is >> std::get_time(&tm, "%d/%m/%Y-%H:%M");
     const std::time_t tt = std::mktime(&tm);
+
     return tt;
 }
 

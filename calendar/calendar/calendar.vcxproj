@@ -115,13 +115,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="checker.cpp" />
     <ClCompile Include="conv_util.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="main_util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calender.h" />
+    <ClInclude Include="checker.h" />
     <ClInclude Include="conv_util.h" />
     <ClInclude Include="Event.h" />
   </ItemGroup>
