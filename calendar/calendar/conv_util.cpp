@@ -5,7 +5,6 @@
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
-#include <iostream>
 
 
 // common regex as global variable
@@ -28,9 +27,9 @@ bool dayIsValid(const int day, const int month)
     int end;
     if (month == 2)
         end = 28;
-    else if (month % 2 == 0)
+    else if (month == 4 || month == 6 || month == 9 || month == 11)
         end = 30;
-    else    // month % 2 == 1
+    else
         end = 31;
     return (day > 0 && day <= end);
 }
