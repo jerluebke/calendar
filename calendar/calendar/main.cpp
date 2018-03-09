@@ -134,7 +134,7 @@ int main() {
     };
 
 
-	while (beendet == false) {
+	while (!beendet) {
 
 		std::flush(std::cout);
 		std::cout << gruss;
@@ -181,7 +181,7 @@ int main() {
                 it != Calender.end(); ++it) {
 
                 if ((it->second.get_startPoint() < startPoint
-                            && it->second.get_endPoint() > startPoint)
+                        && it->second.get_endPoint() > startPoint)
                     && (it->second.get_startPoint() < endPoint
                         && it->second.get_endPoint() > endPoint)
                     && (it->second.get_startPoint() > startPoint
@@ -200,8 +200,10 @@ int main() {
             }
 
             if (valid_event) {
-                Calender.insert(std::pair<time_t,
-                        Event>(startPoint, Event(startPoint, endPoint, title)));
+                Calender.insert(
+                        std::pair<time_t, Event>(
+                            startPoint, Event(startPoint, endPoint, title))
+                );
                 std::cout << ADDED << PROMPT;
                 std::cin >> n;
             }

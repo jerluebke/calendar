@@ -15,9 +15,9 @@ public:
 
 private:
 
-	time_t m_startPoint;
-	 time_t m_endPoint;
-	 std::string m_title;
-	 time_t m_duration;
-	
+    const time_t m_startPoint;
+    const time_t m_endPoint;
+    const std::string m_title;
+	// const time_t m_duration;
+
 };

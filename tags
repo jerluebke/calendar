@@ -5,20 +5,17 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 ADDED	calendar/calendar/main.cpp	/^std::string ADDED = "Termin wurde hinzugefuegt!\\n";$/;"	v
-Calender	calendar/calendar/Calender.h	/^class Calender {$/;"	c
 ENTER_DATE	calendar/calendar/main.cpp	/^std::string ENTER_DATE = "Gebe ein Datum ein (dd\/mm\/yyyy):\\n";$/;"	v
 ENTER_ENDDATE	calendar/calendar/main.cpp	/^std::string ENTER_ENDDATE = "Gebe das Enddatum ein (dd\/mm\/yyyy):\\n";$/;"	v
 ENTER_ENDTIME	calendar/calendar/main.cpp	/^std::string ENTER_ENDTIME = "Gebe eine Uhrzeit des Enddatums ein (hh:mm):\\n";$/;"	v
 ENTER_TIME	calendar/calendar/main.cpp	/^std::string ENTER_TIME = "Gebe eine Uhrzeit ein (hh:mm):\\n";$/;"	v
-Event	calendar/calendar/Event.cpp	/^Event::Event(const time_t startPoint, const time_t endPoint, const std::string title) {$/;"	f	class:Event
+Event	calendar/calendar/Event.cpp	/^Event::Event(const time_t startPoint, const time_t endPoint, const std::string title)$/;"	f	class:Event
 Event	calendar/calendar/Event.h	/^class Event {$/;"	c
 INPUT_INVALID	calendar/calendar/main.cpp	/^std::string INPUT_INVALID = "Eingabe nicht unterstuetzt!\\n";$/;"	v
 NOT_ADDED	calendar/calendar/main.cpp	/^std::string NOT_ADDED = "Es wurde kein Termin hinzugefuegt!\\n";$/;"	v
 NO_TITLE	calendar/calendar/main.cpp	/^std::string NO_TITLE = "Ungueltige Eingabe: Kein Titel!\\n";$/;"	v
-PROMPT	calendar/calendar/main.cpp	/^std::string PROMPT = "Fuer beenden: 7 zurueck zum Kalender: 0\\n";$/;"	v
+PROMPT	calendar/calendar/main.cpp	/^std::string PROMPT = "\\nFuer beenden: 7 zurueck zum Kalender: 0\\n";$/;"	v
 TOO_EARLY	calendar/calendar/main.cpp	/^std::string TOO_EARLY =$/;"	v
-all_for	calendar/calendar/temp.cpp	/^auto all_for = [&Calender](std::pair<time_t, Event> &pair)$/;"	v
-all_if	calendar/calendar/temp.cpp	/^auto all_if = [](std::pair<time_t, Event> &pair) { return true; };$/;"	v
 dateChecker	calendar/calendar/conv_util.cpp	/^auto dateChecker = make_checker(dateRe);$/;"	v
 dateInRange	calendar/calendar/conv_util.cpp	/^bool dateInRange(std::vector<int> tokens)$/;"	f
 dateIsValid	calendar/calendar/conv_util.cpp	/^auto dateIsValid = inputIsValid(dateChecker, dateInRange);$/;"	v
@@ -33,30 +30,17 @@ hoursIsValid	calendar/calendar/conv_util.cpp	/^auto hoursIsValid = isValid(0, 23
 inputIsValid	calendar/calendar/checker.cpp	/^std::function<bool(std::string, std::vector<int>)> inputIsValid($/;"	f
 invalidInput	calendar/calendar/main.cpp	/^void invalidInput(std::string msg = "")$/;"	f
 isValid	calendar/calendar/checker.cpp	/^std::function<bool(const int)> isValid(const int start, const int end)$/;"	f
-m_Calender	calendar/calendar/Calender.h	/^	std::map<time_t, Event> m_Calender;$/;"	m	class:Calender
-m_duration	calendar/calendar/Event.h	/^	 time_t m_duration;$/;"	m	class:Event
-m_endPoint	calendar/calendar/Event.h	/^	 time_t m_endPoint;$/;"	m	class:Event
-m_startPoint	calendar/calendar/Event.h	/^	time_t m_startPoint;$/;"	m	class:Event
-m_title	calendar/calendar/Event.h	/^	 std::string m_title;$/;"	m	class:Event
+m_endPoint	calendar/calendar/Event.h	/^    const time_t m_endPoint;$/;"	m	class:Event
+m_startPoint	calendar/calendar/Event.h	/^    const time_t m_startPoint;$/;"	m	class:Event
+m_title	calendar/calendar/Event.h	/^    const std::string m_title;$/;"	m	class:Event
 main	calendar/calendar/main.cpp	/^int main() {$/;"	f
-main	check_pattern.cpp	/^int main()$/;"	f
 make_checker	calendar/calendar/checker.cpp	/^std::function<bool(std::string)> make_checker(std::regex re)$/;"	f
-make_printer	calendar/calendar/temp.cpp	/^std::function make_printer<void(void)> ($/;"	f
 minutesIsValid	calendar/calendar/conv_util.cpp	/^auto minutesIsValid = isValid(0, 59);$/;"	v
 monthIsValid	calendar/calendar/conv_util.cpp	/^auto monthIsValid = isValid(1, 12);$/;"	v
-n_events	calendar/calendar/temp.cpp	/^            int n_events = 0;$/;"	v
-n_events	calendar/calendar/temp.cpp	/^        int n_events = count_if (Calender.begin(), Calender.end(),$/;"	v
-print_all	calendar/calendar/temp.cpp	/^auto print_all = make_printer(all_for, all_if);$/;"	v
-print_since	calendar/calendar/temp.cpp	/^auto print_since = make_printer(all_for, since_now);$/;"	v
-print_until	calendar/calendar/temp.cpp	/^auto print_until = make_printer(until_now_for, until_now_if);$/;"	v
-printer	calendar/calendar/temp.cpp	/^        auto printer = [](std::pair<time_t, Event> &pair)$/;"	v
 promptForDate	calendar/calendar/main.cpp	/^void promptForDate(time_t &storage, std::string datetime="",$/;"	f
-since_now	calendar/calendar/temp.cpp	/^auto since_now = [now](std::pair<time_t, Event> &pair)$/;"	v
 stringToTime	calendar/calendar/conv_util.cpp	/^std::time_t stringToTime (std::string date, std::string time)$/;"	f
 timeChecker	calendar/calendar/conv_util.cpp	/^auto timeChecker = make_checker(timeRe);$/;"	v
 timeInRange	calendar/calendar/conv_util.cpp	/^bool timeInRange(std::vector<int> tokens)$/;"	f
 timeIsValid	calendar/calendar/conv_util.cpp	/^auto timeIsValid = inputIsValid(timeChecker, timeInRange);$/;"	v
 timeToString	calendar/calendar/conv_util.cpp	/^std::string timeToString (std::time_t time)$/;"	f
-until_now_for	calendar/calendar/temp.cpp	/^auto until_now_for = [now](std::pair<time_t, Event> &pair)$/;"	v
-until_now_if	calendar/calendar/temp.cpp	/^auto until_now_if = [now](std::pair<time_t, Event> &pair)$/;"	v
 yearIsValid	calendar/calendar/conv_util.cpp	/^auto yearIsValid = isValid(1970, 2050);$/;"	v
